@@ -1,13 +1,28 @@
 <template>
-$END$
+	<v-container>
+    <input-form
+      formRounded="xl"
+      :formElevation="formElevation"
+      @storeMovie="storeMovie"
+    />
+  </v-container>
 </template>
 
 <script>
-export default {
-name: "Top.vue"
-}
+  import InputForm from './InputForm.vue'
+	export default {
+    components: {
+      InputForm,
+    },
+    data () {
+      return {
+      formElevation: "10",
+      }
+    },
+    methods: {
+      storeMovie (movieUrl, comment) {
+        console.log(movieUrl, comment)
+      },
+    },
+  }
 </script>
-
-<style scoped>
-
-</style>
