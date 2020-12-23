@@ -1,29 +1,69 @@
 <template>
-  <v-row>
-    <template v-if="loading">
-      <v-container class="px-10 py-10" style="text-align: center">
-        <v-progress-circular size="70" color="blue" indeterminate />
-      </v-container>
-    </template>
-    <template v-else>
-      <v-col
-        v-for="item in movieInternalItems"
-        :key="item.id"
-        cols="12"
-        sm="6"
-        md="4"
-        style="text-align: center"
+  <div>
+    <v-row>
+      <template
+          v-if="loading"
       >
-        <div>
-          <iframe :src="item.url" width="290" height="163.125" frameborder="0" />
-          <p>{{ item.comment }}</p>
-        </div>
-      </v-col>
-    </template>
-  </v-row>
+          <v-container
+              class="px-10 py-10"
+              style="text-align:center"
+          >
+              <v-progress-circular
+                  size="70"
+                  color="blue"
+                  indeterminate
+              />
+          </v-container>
+      </template>
+      <template
+        v-else
+      >
+          <v-col
+            v-for="item in movieInternalItems" :key="item.id"
+            cols="12"
+            sm="6"
+            md="4"
+            class="pr-0"
+            style="width:290px"
+          >
+              <div
+                style="text-align:center"
+              >
+                  <iframe
+                    :src="item.url"
+                    width="290"
+                    height="163.125"
+                    frameborder="0"
+                  />
+                  <v-card
+                    draggable
+                    @dragstart="dragMovie(item.id)"
+                    color="blue"
+                    height="50"
+                    width="290"
+                    style="margin:auto"
+                  >
+                    <v-col>
+                      <p
+                        style="color:white"
+                      >
+                        {{ item.comment }}
+                      </p>
+                    </v-col>
+                  </v-card>
+              </div>
+          </v-col>
+      </template>
+    </v-row>
+    <trash
+      :dropped-movie-id="droppedMovieId"
+      @deleteMovie="deleteMovie"
+    />
+  </div>
 </template>
 
 <script>
+import Trash from './Trash.vue'
 export default {
   props: {
     movieItems: {
@@ -37,9 +77,14 @@ export default {
     },
   },
 
+  components: {
+      Trash,
+    },
+
   data() {
     return {
       movieInternalItems: [],
+      droppedMovieId: 0,
     };
   },
 
@@ -68,8 +113,17 @@ export default {
       } else if (b.id > a.id) {
         comparison = 1;
       }
-      return comparison
+      return comparison;
     },
+     // 動画ドラッグ処理
+      dragMovie (id) {
+        console.log(id)
+        this.droppedMovieId = id
+      },
+      // 動画削除処理
+      deleteMovie () {
+        this.$emit('deleteMovie', this.droppedMovieId)
+      },
   },
 };
 </script>
